@@ -6,14 +6,34 @@
 //
 
 import UIKit
+import SnapKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
-    // Do any additional setup after loading the view.
+    
+    setup()
   }
-
 
 }
 
+private extension ViewController {
+  
+  func setup() {
+    setupBackground()
+  }
+  
+  func setupBackground() {
+    UIImageView(image: .map).then {
+      $0.contentMode = .scaleAspectFill
+      
+      view.addSubview($0)
+      
+      $0.snp.makeConstraints {
+        $0.edges.equalToSuperview()
+      }
+    }
+  }
+  
+}
