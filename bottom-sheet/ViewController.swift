@@ -131,11 +131,24 @@ private extension ViewController {
   }
   
   func nearestState(from current: CGFloat, velocity: CGFloat) -> CGFloat {
-    let velocityTreshold = 1200.0
-    if velocity < -velocityTreshold { return expandedTop }
-    if velocity > velocityTreshold { return collapsedTop }
+    let velocityThreshold: CGFloat = 1200.0
     let positions = [expandedTop, middleTop, collapsedTop]
-    return positions.min(by: { abs($0 - current) < abs($1 - current) })!
+    
+    guard let currentIndex = positions.enumerated().min(by: { abs($0.element - current) < abs($1.element - current) })?.offset else {
+      return current
+    }
+    
+    if velocity < -velocityThreshold {
+      let nextIndex = max(currentIndex - 1, 0) // collapsedTop or next state
+      return positions[nextIndex]
+    }
+    
+    if velocity > velocityThreshold {
+      let nextIndex = min(currentIndex + 1, positions.count - 1) // expandedTop or prev state
+      return positions[nextIndex]
+    }
+    
+    return positions[currentIndex]
   }
   
   func snap(to target: CGFloat) {
